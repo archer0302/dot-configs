@@ -23,6 +23,7 @@ vim.diagnostic.config({ virtual_text = true })
 -- Neovim
 vim.keymap.set("n", "<Esc>", ":noh<CR>", { desc = "Clear search highlight" })
 vim.keymap.set("n", "q", "<Nop>", { noremap = true, silent = true })
+vim.keymap.set("n", "<leader>qq", ":qa<CR>", { desc = "Quit neovim" })
 
 -- nvim-tree
 vim.keymap.set("n", "<leader>fe", ":NvimTreeFindFile<CR>", { desc = "Find current file in NvimTree" })
@@ -41,8 +42,6 @@ vim.keymap.set("t", "<C-l>", "<C-\\><C-w><C-l>", { desc = "Move to right window"
 vim.keymap.set("n", "gd", vim.lsp.buf.definition, { desc = "Go to definition" })
 vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, { desc = "Code actions" })
 vim.keymap.set("n", "<leader>rr", vim.lsp.buf.rename, { desc = "Rename variable" })
-
-vim.keymap.set("n", "<leader>qq", ":qa", { desc = "Quit neovim" })
 
 -- Telescope
 local builtin = require('telescope.builtin')
