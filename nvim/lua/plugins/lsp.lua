@@ -16,7 +16,7 @@ return {
     config = function()
       local vue_plugin = {
         name = "@vue/typescript-plugin",
-        location = "",
+        location = "/opt/homebrew/lib/node_modules/@vue/typescript-plugin/",
         languages = { "vue" },
         configNamespace = "typescript",
       }
@@ -35,7 +35,20 @@ return {
       }
 
       -- If you are on most recent `nvim-lspconfig`
-      local vue_ls_config = {}
+      local vue_ls_config = {
+        settings = {
+          ["vue.suggest.componentNameCasing"] = "preferKebabCase",
+          vue = {
+            suggest = {
+              componentNameCasing = "preferKebabCase"
+            },
+            server = {
+              hybridMode = true
+            }
+          }
+        },
+        filetypes = { "vue" },
+      }
 
       -- nvim 0.11 or above
       vim.lsp.config("vtsls", vtsls_config)

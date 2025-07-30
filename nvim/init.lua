@@ -26,8 +26,15 @@ vim.keymap.set("n", "q", "<Nop>", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>qq", ":qa<CR>", { desc = "Quit neovim" })
 
 -- nvim-tree
-vim.keymap.set("n", "<leader>fe", ":NvimTreeFindFile<CR>", { desc = "Find current file in NvimTree" })
-vim.keymap.set("n", "<leader>e", ":NvimTreeFocus<CR>", { desc = "Focus NvimTree" })
+local nvim_tree_api = require("nvim-tree.api")
+
+local function nvim_tree_find_file()
+  nvim_tree_api.tree.open({ find_file = true })
+end
+
+vim.keymap.set("n", "<leader>fe", nvim_tree_find_file, { desc = "Find current file in NvimTree" })
+vim.keymap.set("n", "<leader>e", nvim_tree_api.tree.focus, { desc = "Focus NvimTree" })
+
 
 -- window navigation
 vim.keymap.set({ "n", "i", "v", "t" }, "<C-h>", "<C-w><C-h>", { desc = "Move to left window" })
@@ -52,27 +59,27 @@ vim.keymap.set('n', '<leader>fh', builtin.help_tags, { desc = 'Telescope help ta
 
 --Terminal
 local function toggle_terminal()
-    for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
-        local buffer_name = vim.api.nvim_buf_get_name(buffer)
-        if (string.sub(buffer_name, 1, 7) == "term://") then
-            local window_id = vim.fn.getbufinfo(buffer)[1].windows[1]
-            if (window_id ~= nil) then
-                if (vim.fn.win_getid() == window_id) then
-                    vim.cmd.close()
-                    return
-                else
-                    vim.fn.win_gotoid(window_id)
-                    return
-                end
-            else
-                vim.cmd.sbuffer(buffer)
-                vim.cmd.resize(10)
-                return
-            end
+  for _, buffer in ipairs(vim.api.nvim_list_bufs()) do
+    local buffer_name = vim.api.nvim_buf_get_name(buffer)
+    if (string.sub(buffer_name, 1, 7) == "term://") then
+      local window_id = vim.fn.getbufinfo(buffer)[1].windows[1]
+      if (window_id ~= nil) then
+        if (vim.fn.win_getid() == window_id) then
+          vim.cmd.close()
+          return
+        else
+          vim.fn.win_gotoid(window_id)
+          return
         end
+      else
+        vim.cmd.sbuffer(buffer)
+        vim.cmd.resize(10)
+        return
+      end
     end
-    vim.cmd.split("term://zsh")
-    vim.cmd.resize(10)
+  end
+  vim.cmd.split("term://zsh")
+  vim.cmd.resize(10)
 end
 
 vim.keymap.set({ "n", "i", "v", "t" }, "<C-`>", toggle_terminal, { desc = "Open terminal window" })
