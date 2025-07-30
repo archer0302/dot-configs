@@ -1,20 +1,26 @@
 -- ~/.config/nvim/lua/plugins/lsp.lua
+
+local language_servsers = {
+  "omnisharp",
+  "clangd",
+  "lua_ls",
+  "basedpyright",
+  "rust_analyzer",
+  "vtsls",
+  "vue_ls"
+}
+
 return {
   {
     "neovim/nvim-lspconfig",
     config = function()
-      vim.lsp.enable("omnisharp")
-      vim.lsp.enable("clangd")
-      vim.lsp.enable("lua_ls")
-      vim.lsp.enable("basedpyright")
-      vim.lsp.enable("rust_analyzer")
-
       local vue_plugin = {
-        name = '@vue/typescript-plugin',
+        name = "@vue/typescript-plugin",
         location = "",
-        languages = { 'vue' },
-        configNamespace = 'typescript',
+        languages = { "vue" },
+        configNamespace = "typescript",
       }
+
       local vtsls_config = {
         settings = {
           vtsls = {
@@ -25,22 +31,16 @@ return {
             },
           },
         },
-        filetypes = { 'typescript', 'javascript', 'javascriptreact', 'typescriptreact', 'vue' },
-      }
-      -- If you are on most recent `nvim-lspconfig`
-      local vue_ls_config = {
-        filetypes = { "vue" },
-        init_options = {
-          vue = {
-            hybridMode = true,
-          },
-        },
+        filetypes = { "typescript", "javascript", "javascriptreact", "typescriptreact", "vue" },
       }
 
+      -- If you are on most recent `nvim-lspconfig`
+      local vue_ls_config = {}
+
       -- nvim 0.11 or above
-      vim.lsp.config('vtsls', vtsls_config)
-      vim.lsp.config('vue_ls', vue_ls_config)
-      vim.lsp.enable({ 'vtsls', 'vue_ls' })
+      vim.lsp.config("vtsls", vtsls_config)
+      vim.lsp.config("vue_ls", vue_ls_config)
+      vim.lsp.enable(language_servsers)
     end,
   },
 }
