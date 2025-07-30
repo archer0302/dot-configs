@@ -1,6 +1,6 @@
-.DS_Store
-
 ## ignore all folders except those expected
-*/*
-!nvim
-!wezterm
+*/**
+!nvim*/**
+!wezterm*/**
+
+.DS_Store
