@@ -16,9 +16,16 @@ vim.opt.inccommand = "split"
 
 vim.opt.ignorecase = true
 vim.opt.termguicolors = true
+vim.opt.spelloptions = "camel"
+vim.opt.spelllang = "en_us"
+vim.opt.spell = true
 
-vim.cmd.colorscheme("kanagawa-wave")
-vim.diagnostic.config({ virtual_text = true })
+require("kanagawa").setup({
+  transparent = true, -- disables setting the background color.
+})
+
+vim.cmd.colorscheme("kanagawa")
+vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
 
 -- Neovim
 vim.keymap.set("n", "<Esc>", ":noh<CR>", { desc = "Clear search highlight" })
@@ -33,7 +40,7 @@ local function nvim_tree_find_file()
 end
 
 vim.keymap.set("n", "<leader>fe", nvim_tree_find_file, { desc = "Find current file in NvimTree" })
-vim.keymap.set("n", "<leader>e", nvim_tree_api.tree.focus, { desc = "Focus NvimTree" })
+vim.keymap.set("n", "<leader>e", nvim_tree_api.tree.toggle, { desc = "Open NvimTree" })
 
 -- window navigation
 vim.keymap.set({ "n", "i", "v", "t" }, "<C-h>", "<C-w><C-h>", { desc = "Move to left window" })
