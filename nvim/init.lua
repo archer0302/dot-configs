@@ -1,5 +1,5 @@
 require("config.lazy")
-vim.opt.number = true
+vim.opt.relativenumber = true
 vim.opt.wrap = false
 
 vim.opt.splitbelow = true
@@ -21,7 +21,16 @@ vim.opt.spelllang = "en_us"
 vim.opt.spell = true
 
 require("kanagawa").setup({
-  transparent = true, -- disables setting the background color.
+  transparent = true,
+  overrides = function(colors)
+    local theme = colors.theme
+    return {
+      LineNr = { bg = "none" },
+      StatusLine = { bg = "none" },
+      StatusLineNC = { bg = "none" },
+      TelescopeNormal = { bg = theme.ui.bg_m3 },
+    }
+  end,
 })
 
 vim.cmd.colorscheme("kanagawa")
@@ -31,6 +40,23 @@ vim.diagnostic.config({ virtual_text = true, virtual_lines = false })
 vim.keymap.set("n", "<Esc>", ":noh<CR>", { desc = "Clear search highlight" })
 vim.keymap.set("n", "q", "<Nop>", { noremap = true, silent = true })
 vim.keymap.set("n", "<leader>qq", ":qa<CR>", { desc = "Quit neovim" })
+
+-- wezterm integration
+-- Set the WezTerm tab title to the initial working directory when Neovim starts.
+vim.api.nvim_create_autocmd("VimEnter", {
+  callback = function()
+    -- You can use `fnamemodify` to get just the basename if you prefer
+    local dirname = vim.fn.fnamemodify(vim.fn.getcwd(), ":t")
+    vim.fn.system({ "wezterm", "cli", "set-tab-title", "nvim: " .. dirname })
+  end,
+})
+
+-- Optional: Reset the title when Neovim exits
+vim.api.nvim_create_autocmd("VimLeave", {
+  callback = function()
+    vim.fn.system({ "wezterm", "cli", "set-tab-title", "" })
+  end,
+})
 
 -- nvim-tree
 local nvim_tree_api = require("nvim-tree.api")

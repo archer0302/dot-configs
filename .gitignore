@@ -4,3 +4,4 @@
 !wezterm*/**
 
 .DS_Store
+wezterm/resources/*

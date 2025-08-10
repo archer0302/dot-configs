@@ -9,6 +9,5 @@ return {
   "EdenEast/nightfox.nvim",
   {
     "rebelot/kanagawa.nvim",
-    transparent = false, -- do not set background color
   }
 }
