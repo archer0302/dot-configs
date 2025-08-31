@@ -23,7 +23,8 @@ return {
       python = { "isort", "black" },
       javascript = { "prettierd", "prettier", stop_after_first = true },
       csharp = { "csharpier" },
-      c = { "clang-format" }
+      c = { "clang-format" },
+      go = { "gofmt" }
     },
     -- Set default options
     default_format_opts = {
@@ -36,6 +37,9 @@ return {
       shfmt = {
         prepend_args = { "-i", "2" },
       },
+      ["clang-format"] = {
+        args = { "-style={AllowShortFunctionsOnASingleLine: Empty}" }
+      }
     },
   },
   init = function()

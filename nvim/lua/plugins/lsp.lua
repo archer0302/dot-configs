@@ -1,24 +1,17 @@
 -- ~/.config/nvim/lua/plugins/lsp.lua
 
 local language_servsers = {
-  "roslyn",
+  "omnisharp",
   "clangd",
   "lua_ls",
-  "basedpyright",
+  "pylsp",
   "rust_analyzer",
-  "vtsls",
-  "vue_ls"
+  "gopls",
+  "ts_ls",
+  "html",
 }
 
 return {
-  {
-    "seblyng/roslyn.nvim",
-    ---@module 'roslyn.config'
-    ---@type RoslynNvimConfig
-    opts = {
-      -- your configuration comes here; leave empty for default settings
-    },
-  },
   {
     "neovim/nvim-lspconfig",
     config = function()
@@ -57,21 +50,17 @@ return {
         filetypes = { "vue" },
       }
 
-      local roslyn_ls_config = {
+      local clangd_config = {
         cmd = {
-          "dotnet",
-          "/opt/roslyn-ls/Microsoft.CodeAnalysis.LanguageServer.dll",
-          "--logLevel=Information",
-          "--extensionLogDirectory=" .. vim.fs.dirname(vim.lsp.get_log_path()),
-          "--stdio",
+          "clangd",
+          "--query-driver=/usr/bin/clang",
         },
+        filetypes = { "c", "cpp" },
       }
 
-
-
-      vim.lsp.config("roslyn", roslyn_ls_config)
-      vim.lsp.config("vtsls", vtsls_config)
-      vim.lsp.config("vue_ls", vue_ls_config)
+      -- vim.lsp.config("vtsls", vtsls_config)
+      -- vim.lsp.config("vue_ls", vue_ls_config)
+      vim.lsp.config("clangd", clangd_config)
       vim.lsp.enable(language_servsers)
     end,
   },

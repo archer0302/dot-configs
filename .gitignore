@@ -1,7 +1,3 @@
 ## ignore all folders except those expected
-*/**
-!nvim*/**
-!wezterm*/**
-
 .DS_Store
 wezterm/resources/*
