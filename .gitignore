@@ -1,3 +1,4 @@
 ## ignore all folders except those expected
 .DS_Store
 wezterm/resources/*
+nvim/lazy-lock.json
