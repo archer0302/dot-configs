@@ -21,7 +21,6 @@ end
 
 config.background = {
   {
-    source = { File = "/Users/archer.chang/.config/wezterm/resources/wezterm_bg_01_fixed.png" },
     hsb = { brightness = 0.02 },
     horizontal_align = "Right",
   },
