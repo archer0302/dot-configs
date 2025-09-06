@@ -3,10 +3,53 @@ return {
   dependencies = {
     "rcarriga/nvim-dap-ui",
     "nvim-neotest/nvim-nio",
-    "leoluz/nvim-dap-go"
+    "leoluz/nvim-dap-go",
+    "jay-babu/mason-nvim-dap.nvim"
   },
   config = function()
     local dap, dapui = require("dap"), require("dapui")
+
+    dap.adapters.codelldb = {
+      type = 'server',
+      port = "${port}",
+      executable = {
+        command = "/Users/archer.chang/.local/share/nvim/mason/packages/codelldb/codelldb", -- or if not in $PATH: "/absolute/path/to/codelldb"
+        args = { "--port", "${port}" },
+      }
+    }
+
+    dap.set_log_level('DEBUG')
+    dap.configurations.cpp = {
+      {
+        name = "Launch file",
+        type = "codelldb",
+        request = "launch",
+        program = function()
+          local source_file = vim.fn.input('Enter the name of the source file to debug: ', '', 'file')
+          local executable = vim.fn.expand('%:p:h') .. '/' .. vim.fn.fnamemodify(source_file, ':r')
+          return executable
+        end,
+        cwd = '${workspaceFolder}',
+        stopOnEntry = false,
+        args = {},
+
+      },
+      {
+        name = "Launch with GDB",
+        type = "gdb",
+        request = "launch",
+        program = function()
+          local source_file = vim.fn.input('Enter the name of the source file to debug: ', '', 'file')
+          local executable = vim.fn.expand('%:p:h') .. '/' .. vim.fn.fnamemodify(source_file, ':r')
+          return executable
+        end,
+        cwd = "${workspaceFolder}",
+        stopOnEntry = false,
+        args = {},
+      }
+    }
+
+    dap.configurations.c = dap.configurations.cpp
 
     require("dapui").setup()
     require("dap-go").setup()
@@ -40,7 +83,6 @@ return {
     vim.keymap.set("n", "<leader>dt", dap.terminate, { desc = "Terminate" })
     vim.keymap.set("n", "<leader>dw", function() require("dap.ui.widgets").hover() end, { desc = "Widgets" })
     vim.keymap.set("n", "<Leader>db", dap.toggle_breakpoint, {})
-    vim.keymap.set("n", "<Leader>dc", dap.continue, {})
     vim.keymap.set("n", "<Leader>dr", ":lua require('dapui').open({reset = true})<CR>", {})
 
     vim.fn.sign_define("DapBreakpoint",
