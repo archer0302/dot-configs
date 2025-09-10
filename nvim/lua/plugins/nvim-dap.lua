@@ -8,6 +8,7 @@ return {
   },
   config = function()
     local dap, dapui = require("dap"), require("dapui")
+    local cpp_compiler = "g++";
 
     dap.adapters.codelldb = {
       type = 'server',
@@ -18,32 +19,23 @@ return {
       }
     }
 
-    dap.set_log_level('DEBUG')
     dap.configurations.cpp = {
       {
         name = "Launch file",
         type = "codelldb",
         request = "launch",
         program = function()
-          local source_file = vim.fn.input('Enter the name of the source file to debug: ', '', 'file')
-          local executable = vim.fn.expand('%:p:h') .. '/' .. vim.fn.fnamemodify(source_file, ':r')
-          return executable
+          local bin_path = vim.fn.expand("%:p:h") .. "/bin"
+          vim.fn.mkdir(bin_path, "p")
+          local current_file = vim.fn.expand('%:p')
+          local executable = bin_path .. "/" .. vim.fn.expand("%:t:r")
+          if vim.fn.system({ cpp_compiler, "-g", "-std=c++23", current_file, "-o", executable }) then
+            return executable
+          else
+            return nil
+          end
         end,
         cwd = '${workspaceFolder}',
-        stopOnEntry = false,
-        args = {},
-
-      },
-      {
-        name = "Launch with GDB",
-        type = "gdb",
-        request = "launch",
-        program = function()
-          local source_file = vim.fn.input('Enter the name of the source file to debug: ', '', 'file')
-          local executable = vim.fn.expand('%:p:h') .. '/' .. vim.fn.fnamemodify(source_file, ':r')
-          return executable
-        end,
-        cwd = "${workspaceFolder}",
         stopOnEntry = false,
         args = {},
       }

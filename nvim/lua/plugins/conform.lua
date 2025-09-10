@@ -38,7 +38,7 @@ return {
         prepend_args = { "-i", "2" },
       },
       ["clang-format"] = {
-        args = { "-style={AllowShortFunctionsOnASingleLine: Empty}" }
+        --        args = { "-style={AllowShortFunctionsOnASingleLine: Empty}" }
       }
     },
   },
