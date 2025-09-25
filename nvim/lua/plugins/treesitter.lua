@@ -14,6 +14,8 @@ return {
 				"c_sharp",
 				"javascript",
 				"vue",
+				"css",
+				"html",
 			},
 
 			-- Install parsers synchronously (only applied to `ensure_installed`)
