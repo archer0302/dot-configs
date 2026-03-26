@@ -1,0 +1,9 @@
+## ignore all folders except those expected
+.DS_Store
+wezterm/resources/*
+nvim/lazy-lock.json
+
+wezterm/local.lua
+nvim/lua/config/local.lua
+.env
+.env.local

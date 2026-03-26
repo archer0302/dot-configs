@@ -1,0 +1,30 @@
+return {
+	"WhoIsSethDaniel/mason-tool-installer.nvim",
+	dependencies = {
+		"mason-org/mason.nvim",
+		"mason-org/mason-lspconfig.nvim",
+		"jay-babu/mason-nvim-dap.nvim",
+	},
+	opts = {
+		ensure_installed = {
+			"gopls",
+			"rust-analyzer",
+			"wgsl-analyzer",
+			"typescript-language-server",
+			"prettierd",
+			"eslint_d",
+			"goimports",
+			"golangci-lint",
+			"taplo",
+			"delve",
+			"codelldb",
+			"js-debug-adapter",
+			"clangd",
+			"clang-format",
+			"cpplint",
+		},
+		run_on_start = true,
+		start_delay = 3000,
+		debounce_hours = 12,
+	},
+}
