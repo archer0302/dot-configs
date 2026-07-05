@@ -27,11 +27,11 @@ vim.pack.add({
 -- Auto-close brackets/quotes (Treesitter-aware)
 require('nvim-autopairs').setup({})
 
--- Treesitter: install C/C++ parsers and enable highlighting for those filetypes.
-require('nvim-treesitter').install({ 'c', 'cpp' })
+-- Treesitter: install C/C++/Rust parsers and enable highlighting for those filetypes.
+require('nvim-treesitter').install({ 'c', 'cpp', 'rust' })
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'c', 'cpp' },
+  pattern = { 'c', 'cpp', 'rust' },
   callback = function() vim.treesitter.start() end,
 })
 
@@ -57,7 +57,7 @@ require('gitsigns').setup({
 vim.cmd("colorscheme kanagawa")
 
 -- LSP list to be enabled
-local lsp_list = { 'lua_ls', 'vtsls', 'clangd' }
+local lsp_list = { 'lua_ls', 'vtsls', 'clangd', 'rust_analyzer' }
 
 -- Tell lua_ls to recognize the 'vim' global
 vim.lsp.config('lua_ls', {
