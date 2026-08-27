@@ -21,8 +21,12 @@ vim.pack.add({
 	'https://github.com/lewis6991/gitsigns.nvim',
 	'https://github.com/sindrets/diffview.nvim',
 	'https://github.com/windwp/nvim-autopairs',
+	'https://github.com/mason-org/mason.nvim',
 	{ src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
 })
+
+-- Setup is required for Mason
+require("mason").setup()
 
 -- Auto-close brackets/quotes (Treesitter-aware)
 require('nvim-autopairs').setup({})

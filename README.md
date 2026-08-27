@@ -1,41 +1,32 @@
-# My Dotfiles for Neovim and WezTerm
+# My Dotfiles for Neovim
 
-These are my personal configuration files for Neovim and WezTerm.
+These are my personal Neovim configuration files.
 
 ## Prerequisites
 
-Before using these configurations, please make sure you have the following software installed:
+Before using this configuration, please make sure you have the following software installed:
 
-- **Neovim**: Version 0.9.0 or higher.
-- **WezTerm**: A modern terminal emulator.
-- **Git**: For cloning this repository and for `lazy.nvim`.
+- **Neovim**: Version 0.12.0 or higher (required for the built-in `vim.pack` plugin manager).
+- **Git**: For cloning this repository and for `vim.pack`.
 - **A C Compiler**: Required by `nvim-treesitter` for compiling parsers.
 - **(Optional) A Nerd Font**: For the icons and symbols in Neovim to render correctly.
 
 ## Installation
 
-You can use these configurations by either creating a symbolic link to them or by copying them to the appropriate configuration paths.
+You can use this configuration by either creating a symbolic link to it or by copying it to the appropriate configuration path.
 
 ### macOS and Linux
 
 **Symlink Method:**
 
 ```bash
-# Neovim
 ln -s /path/to/dot-configs/nvim ~/.config/nvim
-
-# WezTerm
-ln -s /path/to/dot-configs/wezterm ~/.config/wezterm
 ```
 
 **Copy Method:**
 
 ```bash
-# Neovim
 cp -r /path/to/dot-configs/nvim ~/.config/
-
-# WezTerm
-cp -r /path/to/dot-configs/wezterm ~/.config/
 ```
 
 ### Windows
@@ -43,61 +34,36 @@ cp -r /path/to/dot-configs/wezterm ~/.config/
 **Symlink Method (using Command Prompt as Administrator):**
 
 ```cmd
-:: Neovim
 mklink /D %LOCALAPPDATA%\nvim \path\to\dot-configs\nvim
-
-:: WezTerm
-mklink /D %USERPROFILE%\.config\wezterm \path\to\dot-configs\wezterm
 ```
 
 **Copy Method:**
 
 ```cmd
-:: Neovim
 xcopy /E /I \path\to\dot-configs\nvim %LOCALAPPDATA%\nvim
-
-:: WezTerm
-xcopy /E /I \path\to\dot-configs\wezterm %USERPROFILE%\.config\wezterm
 ```
 
 ## Neovim Plugins
 
-The Neovim configuration is managed by `lazy.nvim`. Here is a list of the plugins being used:
+The Neovim configuration is managed by the built-in `vim.pack` plugin manager (no `lazy.nvim` or other plugin manager required). Here is a list of the plugins being used:
 
 | Plugin | GitHub Repository |
 |---|---|
-| blink.cmp | https://github.com/saghen/blink.cmp |
-| friendly-snippets | https://github.com/rafamadriz/friendly-snippets |
 | kanagawa.nvim | https://github.com/rebelot/kanagawa.nvim |
-| codecompanion.nvim | https://github.com/olimorris/codecompanion.nvim |
-| conform.nvim | https://github.com/stevearc/conform.nvim |
-| lazydev.nvim | https://github.com/folke/lazydev.nvim |
 | nvim-lspconfig | https://github.com/neovim/nvim-lspconfig |
-| mason.nvim | https://github.com/mason-org/mason.nvim |
-| mason-lspconfig.nvim | https://github.com/mason-org/mason-lspconfig.nvim |
-| nvim-autopairs | https://github.com/windwp/nvim-autopairs |
-| nvim-tree.lua | https://github.com/nvim-tree/nvim-tree.lua |
-| nvim-web-devicons | https://github.com/nvim-tree/nvim-web-devicons |
-| nvim-ts-autotag | https://github.com/windwp/nvim-ts-autotag |
-| render-markdown.nvim | https://github.com/MeanderingProgrammer/render-markdown.nvim |
-| telescope.nvim | https://github.com/nvim-telescope/telescope.nvim |
 | plenary.nvim | https://github.com/nvim-lua/plenary.nvim |
+| telescope.nvim | https://github.com/nvim-telescope/telescope.nvim |
+| telescope-fzf-native.nvim | https://github.com/nvim-telescope/telescope-fzf-native.nvim |
+| ripgrep | https://github.com/BurntSushi/ripgrep |
+| gitsigns.nvim | https://github.com/lewis6991/gitsigns.nvim |
+| diffview.nvim | https://github.com/sindrets/diffview.nvim |
+| nvim-autopairs | https://github.com/windwp/nvim-autopairs |
+| mason.nvim | https://github.com/mason-org/mason.nvim |
 | nvim-treesitter | https://github.com/nvim-treesitter/nvim-treesitter |
-| which-key.nvim | https://github.com/folke/which-key.nvim |
 
-## WezTerm Configuration
+## Archived Configurations
 
-The WezTerm configuration sets up some keybindings for pane and tab navigation, and a custom background image. You can find the keybindings in the `wezterm/wezterm.lua` file.
+The `archive/` directory holds configurations that are no longer maintained, kept for reference only:
 
-### Keybindings
-
-| Key | Modifier | Action |
-|---|---|---|
-| `{` | SHIFT+ALT | Move tab to the left |
-| `}` | SHIFT+ALT | Move tab to the right |
-| `H` | CTRL+SHIFT | Activate left pane |
-| `L` | CTRL+SHIFT | Activate right pane |
-| `J` | CTRL+SHIFT | Activate bottom pane |
-| `K` | CTRL+SHIFT | Activate top pane |
-| ``` | CTRL | Activate next pane |
-| `\` | CTRL | Toggle pane zoom state |
+- `archive/wezterm/` — a previous WezTerm terminal configuration.
+- `archive/nvim-0.11/` — a previous Neovim configuration built on `lazy.nvim`, used before the switch to `vim.pack`.

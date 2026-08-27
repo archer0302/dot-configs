@@ -1,9 +1,7 @@
 ## ignore all folders except those expected
 .DS_Store
-wezterm/resources/*
-nvim/lazy-lock.json
+archive/wezterm/resources/*
 
-wezterm/local.lua
-nvim/lua/config/local.lua
+archive/wezterm/local.lua
 .env
 .env.local
