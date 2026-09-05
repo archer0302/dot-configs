@@ -22,20 +22,37 @@ vim.pack.add({
 	'https://github.com/sindrets/diffview.nvim',
 	'https://github.com/windwp/nvim-autopairs',
 	'https://github.com/mason-org/mason.nvim',
+    'https://github.com/mason-org/mason-lspconfig.nvim.git',
+    'https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim.git',
+	'https://github.com/stevearc/oil.nvim',
+	'https://github.com/nvim-mini/mini.icons',
 	{ src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
 })
 
+require("oil").setup()
+require('mini.icons').setup()
+
 -- Setup is required for Mason
 require("mason").setup()
+
+-- LSP：自動安裝 + 自動 enable
+require("mason-lspconfig").setup({
+  ensure_installed = { "pyright", "lua_ls" },
+})
+
+-- Linter/Formatter（非 LSP）：交給 mason-tool-installer
+require("mason-tool-installer").setup({
+  ensure_installed = { "ruff", "stylua" },
+})
 
 -- Auto-close brackets/quotes (Treesitter-aware)
 require('nvim-autopairs').setup({})
 
 -- Treesitter: install C/C++/Rust parsers and enable highlighting for those filetypes.
-require('nvim-treesitter').install({ 'c', 'cpp', 'rust' })
+require('nvim-treesitter').install({ 'c', 'cpp', 'rust', 'python', 'toml' })
 
 vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'c', 'cpp', 'rust' },
+  pattern = { 'c', 'cpp', 'rust', 'python' },
   callback = function() vim.treesitter.start() end,
 })
 
@@ -114,7 +131,7 @@ vim.opt.completeopt = { 'menu', 'menuone', 'noselect', 'popup' }
 vim.g.mapleader = " "
 
 vim.keymap.set('n', 'gl', vim.diagnostic.open_float)
-vim.keymap.set('n', '<leader>e', ':Lexplore<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>e', '<CMD>Oil<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>f', ':Telescope find_files<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>cf', function() vim.lsp.buf.format({ async = true }) end,
 	{ noremap = true, silent = true, desc = 'LSP format buffer' })
@@ -125,6 +142,5 @@ vim.keymap.set('n', '<leader>gm', ':DiffviewOpen main...HEAD<CR>', { silent = tr
 vim.keymap.set('n', '<leader>gh', ':DiffviewFileHistory %<CR>', { silent = true, desc = 'Diffview: file history' })
 vim.keymap.set('n', '<leader>gc', ':DiffviewClose<CR>', { silent = true, desc = 'Diffview: close' })
 
-vim.g.netrw_banner = 0         -- Hide the top banner
-vim.g.netrw_liststyle = 3      -- Tree view style
-vim.g.netrw_winsize = 25       -- Set window size to 25%
+vim.o.number = true
+vim.o.relativenumber = true
