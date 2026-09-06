@@ -22,8 +22,13 @@ vim.pack.add({
 local servers = { 'lua_ls', 'vtsls', 'clangd', 'rust_analyzer' }
 
 for _, name in ipairs(servers) do
-  local ok, settings = pcall(require, 'lsp.' .. name)
-  if ok then vim.lsp.config(name, settings) end
+  -- Check for the file rather than pcall(require): a pcall cannot tell "this
+  -- server needs no overrides" from "this server's settings file has an error
+  -- in it", and the second silently starts the server on defaults -- exactly
+  -- the failure this file's header warns about.
+  if #vim.api.nvim_get_runtime_file('lua/lsp/' .. name .. '.lua', false) > 0 then
+    vim.lsp.config(name, require('lsp.' .. name))
+  end
 end
 
 vim.lsp.enable(servers)

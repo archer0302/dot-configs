@@ -65,10 +65,12 @@ Two ordering contracts are enforced by the order of the requires in
 1. `vim.g.mapleader` is baked into a mapping's left-hand side when
    `vim.keymap.set` runs, so it is set before any module that defines one.
    Get this wrong and mappings bind to `\` instead of `<Space>`.
-2. `core.autocmds` registers the `PackChanged` -> `TSUpdate` hook, which must
-   exist before the first `vim.pack.add()` call for it to fire on a fresh
-   install-from-lockfile. Plugin modules each call `vim.pack.add` themselves,
-   so `core.autocmds` is required ahead of all of them.
+2. `core.autocmds` registers every plugin build hook, and must load before any
+   of them. `vim.pack.add()` installs every plugin in `nvim-pack-lock.json`,
+   not only the ones passed to that call -- so the session's *first* `add()`
+   installs everything and fires every `PackChanged` event at that moment. A
+   build hook registered by a later plugin module never sees its own plugin's
+   event, because that plugin was installed during an earlier module's `add()`.
 
 ### Adding a plugin
 
