@@ -26,6 +26,7 @@ vim.pack.add({
     'https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim.git',
 	'https://github.com/stevearc/oil.nvim',
 	'https://github.com/nvim-mini/mini.icons',
+	'https://github.com/folke/which-key.nvim',
 	{ src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
 })
 
@@ -132,7 +133,7 @@ vim.g.mapleader = " "
 
 vim.keymap.set('n', 'gl', vim.diagnostic.open_float)
 vim.keymap.set('n', '<leader>e', '<CMD>Oil<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>f', ':Telescope find_files<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', { noremap = true, silent = true })
 vim.keymap.set('n', '<leader>cf', function() vim.lsp.buf.format({ async = true }) end,
 	{ noremap = true, silent = true, desc = 'LSP format buffer' })
 
