@@ -12,4 +12,5 @@ require('mini.icons').setup()
 -- Auto-close brackets/quotes (Treesitter-aware)
 require('nvim-autopairs').setup({})
 
-vim.keymap.set('n', '<leader>e', '<CMD>Oil<CR>', { noremap = true, silent = true })
+vim.keymap.set('n', '<leader>e', '<CMD>Oil<CR>',
+  { noremap = true, silent = true, desc = 'File explorer (Oil)' })
