@@ -1,147 +1,31 @@
--- Run :TSUpdate whenever nvim-treesitter is installed/updated.
--- Registered before vim.pack.add() so it also fires on first install-from-lockfile.
-vim.api.nvim_create_autocmd('PackChanged', {
-  callback = function(ev)
-    if ev.data.spec.name == 'nvim-treesitter'
-      and (ev.data.kind == 'install' or ev.data.kind == 'update') then
-      vim.cmd('packadd nvim-treesitter')
-      vim.cmd('TSUpdate')
-    end
-  end,
-})
+-- Neovim configuration entry point.
+--
+-- ORDERING CONTRACTS -- two things here must happen before anything else, and
+-- both fail silently rather than erroring if you get them wrong:
+--
+--   1. `mapleader` is baked into a keymap's left-hand side at the moment
+--      `vim.keymap.set` runs. Set it before ANY module that defines a mapping,
+--      or those mappings silently bind to `\` instead of <Space>.
+--   2. `core.autocmds` registers every plugin build hook. vim.pack.add()
+--      installs everything in nvim-pack-lock.json, not just what that call
+--      names, so the session's FIRST add() fires every PackChanged event.
+--      A hook registered by a later module never sees its own plugin's event,
+--      which is why `core.autocmds` is required ahead of all of them.
+--
+-- Everything after that is ordered for dependencies: `plugins.mason` installs
+-- and registers servers, so it runs before `plugins.lsp` enables them.
 
--- Plugins
-vim.pack.add({
-	'https://github.com/rebelot/kanagawa.nvim',
-	'https://github.com/neovim/nvim-lspconfig',
-	'https://github.com/nvim-lua/plenary.nvim',
-    'https://github.com/nvim-telescope/telescope.nvim',
-	'https://github.com/nvim-telescope/telescope-fzf-native.nvim',
-	'https://github.com/BurntSushi/ripgrep',
-	'https://github.com/lewis6991/gitsigns.nvim',
-	'https://github.com/sindrets/diffview.nvim',
-	'https://github.com/windwp/nvim-autopairs',
-	'https://github.com/mason-org/mason.nvim',
-    'https://github.com/mason-org/mason-lspconfig.nvim.git',
-    'https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim.git',
-	'https://github.com/stevearc/oil.nvim',
-	'https://github.com/nvim-mini/mini.icons',
-	'https://github.com/folke/which-key.nvim',
-	{ src = 'https://github.com/nvim-treesitter/nvim-treesitter', version = 'main' },
-})
+vim.g.mapleader = ' '
 
-require("oil").setup()
-require('mini.icons').setup()
+require('core.autocmds')
+require('core.options')
+require('core.keymaps')
 
--- Setup is required for Mason
-require("mason").setup()
-
--- LSP：自動安裝 + 自動 enable
-require("mason-lspconfig").setup({
-  ensure_installed = { "pyright", "lua_ls" },
-})
-
--- Linter/Formatter（非 LSP）：交給 mason-tool-installer
-require("mason-tool-installer").setup({
-  ensure_installed = { "ruff", "stylua" },
-})
-
--- Auto-close brackets/quotes (Treesitter-aware)
-require('nvim-autopairs').setup({})
-
--- Treesitter: install C/C++/Rust parsers and enable highlighting for those filetypes.
-require('nvim-treesitter').install({ 'c', 'cpp', 'rust', 'python', 'toml' })
-
-vim.api.nvim_create_autocmd('FileType', {
-  pattern = { 'c', 'cpp', 'rust', 'python' },
-  callback = function() vim.treesitter.start() end,
-})
-
--- Git: gitsigns (inline hunks) + diffview (branch/PR review)
-require('gitsigns').setup({
-  on_attach = function(bufnr)
-    local gs = require('gitsigns')
-    local function map(mode, lhs, rhs, desc)
-      vim.keymap.set(mode, lhs, rhs, { buffer = bufnr, silent = true, desc = desc })
-    end
-    -- Hunk navigation
-    map('n', ']c', function() gs.nav_hunk('next') end, 'Next git hunk')
-    map('n', '[c', function() gs.nav_hunk('prev') end, 'Prev git hunk')
-    -- Hunk actions
-    map('n', '<leader>gp', gs.preview_hunk, 'Preview hunk')
-    map('n', '<leader>gs', gs.stage_hunk, 'Stage hunk')
-    map('n', '<leader>gr', gs.reset_hunk, 'Reset hunk')
-    map('n', '<leader>gb', function() gs.blame_line({ full = true }) end, 'Blame line')
-  end,
-})
-
--- ColorScheme
-vim.cmd("colorscheme kanagawa")
-
--- LSP list to be enabled
-local lsp_list = { 'lua_ls', 'vtsls', 'clangd', 'rust_analyzer' }
-
--- Tell lua_ls to recognize the 'vim' global
-vim.lsp.config('lua_ls', {
-  settings = {
-    Lua = {
-      diagnostics = {
-        globals = { 'vim' },
-      },
-    },
-  },
-})
-
--- clangd: override only cmd (root markers / filetypes come from nvim-lspconfig's defaults)
-vim.lsp.config('clangd', {
-  cmd = {
-    'clangd',
-    '--background-index',
-    '--clang-tidy',
-    '--header-insertion=iwyu',
-    '--completion-style=detailed',
-  },
-})
-
-vim.lsp.enable(lsp_list)
-
--- LSP-driven auto-completion: trigger clangd (and all servers) on every keypress.
-vim.api.nvim_create_autocmd('LspAttach', {
-  callback = function(ev)
-    local client = vim.lsp.get_client_by_id(ev.data.client_id)
-    if not (client and client:supports_method('textDocument/completion')) then return end
-    -- Add identifier characters to triggerCharacters so completion fires on every keypress
-    -- (default only triggers on server chars like '.', '->', '::'). Must run before enable().
-    local provider = client.server_capabilities.completionProvider or {}
-    local triggers = provider.triggerCharacters or {}
-    for c = string.byte('a'), string.byte('z') do triggers[#triggers + 1] = string.char(c) end
-    for c = string.byte('A'), string.byte('Z') do triggers[#triggers + 1] = string.char(c) end
-    triggers[#triggers + 1] = '_'
-    provider.triggerCharacters = triggers
-    client.server_capabilities.completionProvider = provider
-    vim.lsp.completion.enable(true, client.id, ev.buf, { autotrigger = true })
-  end,
-})
-
-vim.opt.tabstop = 4      -- Number of spaces that a <Tab> in the file counts for
-vim.opt.shiftwidth = 4   -- Number of spaces to use for each step of (auto)indent
-vim.opt.softtabstop = 4  -- Number of spaces that a <Tab> counts for while performing editing operations
-vim.o.autocomplete = true
--- Completion menu behaviour (popup = doc preview; noselect = don't auto-pick first item)
-vim.opt.completeopt = { 'menu', 'menuone', 'noselect', 'popup' }
-vim.g.mapleader = " "
-
-vim.keymap.set('n', 'gl', vim.diagnostic.open_float)
-vim.keymap.set('n', '<leader>e', '<CMD>Oil<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>ff', ':Telescope find_files<CR>', { noremap = true, silent = true })
-vim.keymap.set('n', '<leader>cf', function() vim.lsp.buf.format({ async = true }) end,
-	{ noremap = true, silent = true, desc = 'LSP format buffer' })
-
--- Diffview: review the working tree, a branch/PR range, or file history
-vim.keymap.set('n', '<leader>gd', ':DiffviewOpen<CR>', { silent = true, desc = 'Diffview: working tree' })
-vim.keymap.set('n', '<leader>gm', ':DiffviewOpen main...HEAD<CR>', { silent = true, desc = 'Diffview: branch vs main' })
-vim.keymap.set('n', '<leader>gh', ':DiffviewFileHistory %<CR>', { silent = true, desc = 'Diffview: file history' })
-vim.keymap.set('n', '<leader>gc', ':DiffviewClose<CR>', { silent = true, desc = 'Diffview: close' })
-
-vim.o.number = true
-vim.o.relativenumber = true
+require('plugins.colorscheme')
+require('plugins.editor')
+require('plugins.finder')
+require('plugins.git')
+require('plugins.treesitter')
+require('plugins.mason')
+require('plugins.lsp')
+require('plugins.which-key')
